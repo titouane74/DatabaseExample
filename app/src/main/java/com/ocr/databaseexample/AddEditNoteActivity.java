@@ -12,8 +12,10 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ID =
+            "com.ocr.databaseexample.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "com.ocr.databaseexample.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION =
@@ -38,7 +40,15 @@ public class AddNoteActivity extends AppCompatActivity {
         mNumberPickerPriority.setMaxValue(10);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add note");
+        Intent lIntent= getIntent();
+        if (lIntent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit Note");
+            mEditTextTitle.setText(lIntent.getStringExtra(EXTRA_TITLE));
+            mEditTextDescription.setText(lIntent.getStringExtra(EXTRA_DESCRIPTION));
+            mNumberPickerPriority.setValue(lIntent.getIntExtra(EXTRA_PRIORITY,1));
+        } else {
+            setTitle("Add note");
+        }
 
     }
 
@@ -56,6 +66,11 @@ public class AddNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TITLE,lTitle);
         data.putExtra(EXTRA_DESCRIPTION, lDescription);
         data.putExtra(EXTRA_PRIORITY,lPriority);
+
+        int pId = getIntent().getIntExtra(EXTRA_ID,-1);
+        if (pId != -1) {
+            data.putExtra(EXTRA_ID, pId);
+        }
 
         setResult(RESULT_OK, data);
         finish();
